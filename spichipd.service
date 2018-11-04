@@ -1,0 +1,14 @@
+[Unit]
+Description=Read chips with serial peripheral interface.
+
+[Service]
+ExecStart=/usr/sbin/spichipd
+Type=simple
+Restart=no
+TimeoutSec=5min
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+
+[Install]
+WantedBy=multi-user.target
