@@ -2,6 +2,8 @@
 Read chips with Serial Peripheral Interface on Raspberry Pi.
 Chips working with some issues: MAX31865.
 
+Install *libsystemd-dev* and enable SPI with *raspi-config*.
+
 Compile code with *make*.
 
 Test the code with
