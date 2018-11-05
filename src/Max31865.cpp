@@ -20,7 +20,7 @@
  ****************************************************************************
  *
  * Sat  3 Nov 20:21:27 CDT 2018
- * Edit: Sun  4 Nov 13:55:12 CST 2018
+ * Edit: Sun  4 Nov 19:29:16 CST 2018
  *
  * Jaakko Koivuniemi
  **/
@@ -70,6 +70,46 @@ void Max31865::OneShot()
    confreg |= 0x20;
    SPIChip::SPIWriteByteRead(MAX31865_CONFIG_WRITE, confreg, 2, readbuffer);
 }
+
+/// Fault detection with automatic delay.
+void Max31865::FaultDetection()
+{
+   uint8_t confreg = 0x00;
+   uint8_t readbuffer[ 2 ];
+
+   SPIChip::SPIWriteByteRead(MAX31865_CONFIG_READ, 0x00, 2, readbuffer);
+   confreg = readbuffer[ 1 ];
+   confreg |= 0x84;
+   confreg &= 0x95;
+   SPIChip::SPIWriteByteRead(MAX31865_CONFIG_WRITE, confreg, 2, readbuffer);
+}
+
+/// Fault detection with cycle 1.
+void Max31865::FaultDetectionCycle1()
+{
+   uint8_t confreg = 0x00;
+   uint8_t readbuffer[ 2 ];
+
+   SPIChip::SPIWriteByteRead(MAX31865_CONFIG_READ, 0x00, 2, readbuffer);
+   confreg = readbuffer[ 1 ];
+   confreg |= 0x88;
+   confreg &= 0x99;
+   SPIChip::SPIWriteByteRead(MAX31865_CONFIG_WRITE, confreg, 2, readbuffer);
+}
+
+/// Fault detection with cycle 2.
+void Max31865::FaultDetectionCycle2()
+{
+   uint8_t confreg = 0x00;
+   uint8_t readbuffer[ 2 ];
+
+   SPIChip::SPIWriteByteRead(MAX31865_CONFIG_READ, 0x00, 2, readbuffer);
+   confreg = readbuffer[ 1 ];
+   confreg |= 0x8C;
+   confreg &= 0x9D;
+   SPIChip::SPIWriteByteRead(MAX31865_CONFIG_WRITE, confreg, 2, readbuffer);
+}
+
 
 /// Change configuration to three wire measurement.
 void Max31865::ThreeWire()
@@ -171,13 +211,26 @@ void Max31865::SetLowFault(uint16_t lowfault)
 }
 
 /// Read fault status byte.
+bool Max31865::IsFault()
+{
+   uint8_t readbuffer[ 2 ];
+   uint8_t rtdlsb = 0x00;
+   bool isfault = false;
+
+   SPIChip::SPIWriteByteRead(MAX31865_RTDLSB_READ, 0x00, 2, readbuffer);
+   rtdlsb = (uint8_t)readbuffer[ 1 ]; 
+   if( (rtdlsb & 0x01) == 0x01 ) isfault = true;
+
+   return isfault;
+}
+
+/// Read fault status byte.
 uint8_t Max31865::GetFaultStatusByte()
 {
    uint8_t readbuffer[ 2 ];
    uint8_t faultstatus = 0x00;
 
    SPIChip::SPIWriteByteRead(MAX31865_FAULTSTATUS_READ, 0x00, 2, readbuffer);
-
    faultstatus = (uint8_t)readbuffer[ 1 ]; 
 
    return faultstatus;

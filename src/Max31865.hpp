@@ -20,7 +20,7 @@
  ****************************************************************************
  *
  * Sat  3 Nov 20:21:27 CDT 2018
- * Edit: Sun  4 Nov 13:18:25 CST 2018
+ * Edit: Sun  4 Nov 19:28:55 CST 2018
  *
  * Jaakko Koivuniemi
  **/
@@ -36,6 +36,7 @@
 #define MAX31865_CONFIG_READ 0x00
 #define MAX31865_CONFIG_WRITE 0x80
 #define MAX31865_RTD_READ 0x01
+#define MAX31865_RTDLSB_READ 0x02
 #define MAX31865_HIGHFAULT_READ 0x03
 #define MAX31865_HIGHFAULT_WRITE 0x83
 #define MAX31865_LOWFAULT_READ 0x05
@@ -85,6 +86,9 @@ class Max31865 : public SPIChip
     /// Get low fault value.
     uint16_t GetLowFault(); 
 
+    /// Test if least significant bit in RTD is set indicating fault.
+    bool IsFault();
+
     /// Get fault status byte.
     uint8_t GetFaultStatusByte(); 
 
@@ -117,6 +121,15 @@ class Max31865 : public SPIChip
 
     /// Start one shot measurement by setting bit D5=1 in configuration register.
     void OneShot(); 
+
+    /// Fault detection with automatic delay.
+    void FaultDetection();
+
+    /// Fault detection cycle 1.
+    void FaultDetectionCycle1();
+
+    /// Fault detection cycle 2.
+    void FaultDetectionCycle2();
 
     /// Use 3-wire mode by setting bit D4=1 in configuration register.
     void ThreeWire(); 

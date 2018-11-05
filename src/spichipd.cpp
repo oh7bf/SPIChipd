@@ -20,7 +20,7 @@
  ****************************************************************************
  *
  * Sat  3 Nov 20:21:27 CDT 2018
- * Edit: Sun  4 Nov 14:31:27 CST 2018
+ * Edit: Sun  4 Nov 19:55:02 CST 2018
  *
  * Jaakko Koivuniemi
  **/
@@ -78,8 +78,13 @@ int main()
     chip.OneShot();
     usleep( 100000 );
 
+    chip.FaultDetection();
+    usleep( 1000 );
+
     cout << chip.GetName() << " = " << chip.GetTemperature();
-    cout << " C  fault = " << (int)chip.GetFaultStatusByte() << "\n";
+    cout << " C";
+    if( chip.IsFault() ) cout << " fault = " << (int)chip.GetFaultStatusByte();
+    cout << "\n";
  
     sleep( readinterval );
   }
